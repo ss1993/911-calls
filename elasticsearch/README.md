@@ -23,6 +23,66 @@ GET <nom de votre index>/_count
 
 ```
 TODO : ajouter les requêtes ElasticSearch ici
+
+PUT 911
+{
+    "mappings": {
+        "calls" : {
+          "properties": {
+            "location" : {
+                "type" : "geo_point"
+            },
+            "category": {
+              "type": "keyword"
+            },
+            "neighborhood": {
+              "type": "keyword"
+            }
+          }
+        }
+    }
+}
+
+GET /911/calls/_count/
+{
+    "query": {
+        "bool" : {
+            "must" : {
+                "match_all" : {}
+            },
+            "filter" : {
+                "geo_distance" : {
+                    "distance" : "500m",
+                    "location" : {
+                        "lat" : 40.241493,
+                        "lon" : -75.283783
+                    }
+                }
+            }
+        }
+    }
+}
+
+GET /911/calls/_search/
+{
+  "aggs" : {
+        "accidents" : {
+            "terms" : { "field" : "category" }
+        }
+    }
+}
+
+GET /911/calls/_search/
+{
+  "query": { "match": { "title": "overdose" } },
+  
+  "aggs" : {
+        "accidents" : {
+            "terms" : { "field" : "neighborhood" }
+        }
+    }
+}
+
 ```
 
 ## Kibana
